@@ -7,10 +7,14 @@ is a 3D atmosphere at rest, relevant for hot Jupiters
 
 import numpy as np
 from scipy import interpolate
+import os
 
 #output directory
-out_dir = '../data/'
+out_dir = f"{os.environ['ECLIPS3D_DATA']}/3D/data/"
 
+#creates directory if it doesn't already exist
+if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
 
 #Size of the output
 Nlongf=20
