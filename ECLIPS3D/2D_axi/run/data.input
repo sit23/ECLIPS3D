@@ -1,10 +1,10 @@
 &resolution
-nlat = 60
-nz = 50
+nlat = 40
+nz = 20
 nb = 64
 /
 &folder
-DIRDATA = '../data/'
+DIRDATA = '/gpfs/ts0/home/sit204/eclips3d/data_eclips3d/2D_axi/data/'
 /
 
 #trad_type can be komacek, iroetal or constnt
