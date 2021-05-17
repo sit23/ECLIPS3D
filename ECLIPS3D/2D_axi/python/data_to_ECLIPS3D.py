@@ -28,9 +28,9 @@ from scipy import interpolate
 #Initialises an isothermal atmosphere at rest 
 # with physical values c
 
-out_dir = '/Users/florian/Desktop/test/ECLIPS3D/trunk/2D_axi/data/'
+out_dir = '/gpfs/ts0/home/sit204/eclips3d/data_eclips3d/2D_axi/data/'
 
-
+#define a coarse grid with Nlatf and Nzf points
 Nlatf=40
 Nzf=20
 
@@ -38,12 +38,14 @@ Nzf=20
 
 
 
-r=6372000.0
-Heig=80000.0
+r=6372000.0 #planet's radius
+Heig=80000.0 #height range of simulation (I assume?), i.e. 80km in this case.
+
+#define a finer grid with nlat, nz gridpoints
 nz=100
 nlat=100
 
-
+#initial state created on nz nlat grid, rather than Nlatf, Nzf grid.
 
 dphi=np.pi/nlat
 dz=Heig/nz
@@ -56,6 +58,7 @@ u=np.zeros((nz+1,nlat+1))
 v=np.zeros((nz+1,nlat+1))
 w=np.zeros((nz+1,nlat+1))
 
+#initialise temperatures as isothermal
 T=250.
 R=287.05
 cp=1005.0
@@ -63,6 +66,7 @@ p0=1.0E5
 g=9.81
 omega=7.292E-5
 
+#initialise gravitational acceleration as a function of radius
 g1=np.zeros(nz+1)
 for i in range(nz+1) :
     g1[i]=g*r**2/(r+z_f[i])**2
@@ -71,15 +75,21 @@ p=np.zeros((nz+1,nlat+1))
 theta=np.zeros((nz+1,nlat+1))
 rho=np.zeros((nz+1,nlat+1))
 
+#begins by defining initial hydrostatic state:
+
 for i in range(nz+1) :
     p[i]=p0*np.exp(-g1[i]*z_f[i]/(R*T))
+
+#option to add some initial jet, not currently used:
     
 #for i in range(nz+1) :
 #    u[i]=2.0*omega*r*np.exp(-(x_f[:])**2/(2*0.2**2))
 
+#initialise rho and theta based on calculated pressures and isothermal T
 rho=p/(R*T)
 theta=(p0/p)**(R/cp)*T
 
+#now we calculate gradients of all the variables.
 du=np.gradient(u,dz,dphi)
 dv=np.gradient(v,dz,dphi)
 dw=np.gradient(w,dz,dphi)
@@ -125,7 +135,7 @@ ZW=(np.linspace(0,Nzf,Nzf+1))*dz
 
 
 
-
+#set up interpolation objects from x_f, z_f grid (nlat, nz)
 fu=interpolate.interp2d(x_f,z_f,u)
 fv=interpolate.interp2d(x_f,z_f,v)
 fp=interpolate.interp2d(x_f,z_f,p)
@@ -148,7 +158,7 @@ fdtheta_dphi=interpolate.interp2d(x_f,z_f,theta_phi)
 fdrho_dphi=interpolate.interp2d(x_f,z_f,rho_phi)
 
 
-
+#perform interpolation onto XU, ZU grid, with Nlatf, Nzf points. 
 u_f=fu(XU,ZU)
 u_hf=fu(XU,ZW)
 u_lf=fu(XV,ZU)
@@ -231,9 +241,9 @@ dw_dphi_lf=fdw_dphi(XV,ZU)
 
 
 
+#Now we start creating a long list variable, res, which will be sent as output to data.input. This will then be read in by the code as the 'dataarray' in mod_fill_matrix.
 
-
-res=np.append(u_f.T,u_hf.T)
+res=np.append(u_f.T,u_hf.T) #n.b start res list by appending u_hf.T to u_f.T, then proceed by appending everything else to res list
 res=np.append(res,u_lf.T)
 
 
@@ -258,7 +268,7 @@ res=np.append(res,w_hf.T)
 res=np.append(res,w_lf.T)
 
 
-
+# do the same construction process on the dres lists for derivatives 
 dres=np.append(du_dphi_f.T,du_dz_f.T)
 
 dres=np.append(dres,dv_dphi_f.T)
@@ -286,6 +296,7 @@ dres=np.append(dres,dw_dphi_hf.T)
 dres=np.append(dres,dw_dz_f.T)
 dres=np.append(dres,dw_dz_hf.T)
 
+#output everything to two files - one for data and one for derivatives
 
 file=open(out_dir+'data.dat','w')
 dfile=open(out_dir+'ddata.dat','w')
