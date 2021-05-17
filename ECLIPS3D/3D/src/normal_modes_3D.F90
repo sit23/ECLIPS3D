@@ -55,7 +55,8 @@ PROGRAM normal_modes_3D
   ndvtab=nz*(nlat+1)*nlong*7
   ndptab=nz*nlat*nlong*8
   ndwtab=(nz+1)*nlat*nlong*10
-  nqtab=nz*nlat*nlong+(nz+1)*nlat*nlong
+  ! nqtab=nz*nlat*nlong+(nz+1)*nlat*nlong
+  nqtab=2*nz*nlat*nlong
 
 
   IF (myrow==0 .AND. mycol==0) THEN
