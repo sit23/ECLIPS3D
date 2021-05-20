@@ -11,11 +11,20 @@ import matplotlib.pyplot as plt
 from scipy import interpolate
 from scipy.misc import derivative
 import scipy.optimize as Opt
-
+import os
 
 #three=False
 three = True
 
+#output directory
+if three:
+    out_dir = f"{os.environ['ECLIPS3D_DATA']}/3D_bar/data/"
+else:
+    out_dir = f"{os.environ['ECLIPS3D_DATA']}/2D_bar/data/"
+
+#creates directory if it doesn't already exist
+if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
 
 Nlong = 35
 Nlat = 25
@@ -41,6 +50,8 @@ omega = 7.29212e-5
 
 Height = 30.0E3
 cp = 1005.0
+
+no_slip=True
 
 A = 1./Gamma
 T0 = 0.5 * (T0_E+T0_P)
@@ -254,6 +265,17 @@ drho_dz_w = np.zeros((Nlong,Nlat,Nz+1))
 
 T_u=np.zeros((Nlong,Nlat,Nz))
 
+#--------------------------------------------------------
+#Heating zeros
+#--------------------------------------------------------
+
+if (no_slip) :
+    Q_theta_w = np.zeros((Nlong,Nlat,Nz))
+    Q_p_p = np.zeros((Nlong,Nlat,Nz))
+else :
+    Q_theta_w = np.zeros((Nlong,Nlat,Nz-1))
+    Q_p_p = np.zeros((Nlong,Nlat,Nz))
+
 #=============================================
 # Perturbed speed
 #=============================================
@@ -437,28 +459,31 @@ if three :
     dwres=np.append(dwres,drho_dphi_w)
     dwres=np.append(dwres,drho_dz_w)
     
+    Qdata=np.append(Q_p_p.T,Q_theta_w.T)
+
     
+    file=open(f'{out_dir}/data.dat','w')
+    dufile=open(f'{out_dir}/dudata.dat','w')
+    dvfile=open(f'{out_dir}/dvdata.dat','w')
+    dpfile=open(f'{out_dir}/dpdata.dat','w')
+    dwfile=open(f'{out_dir}/dwdata.dat','w')
+    qfile =open(f'{out_dir}/qdata.dat','w')
+
     
-    file=open('/Users/florian/Desktop/MyWork/3D_sca/data/data.dat','w')
-    dufile=open('/Users/florian/Desktop/MyWork/3D_sca/data/dudata.dat','w')
-    dvfile=open('/Users/florian/Desktop/MyWork/3D_sca/data/dvdata.dat','w')
-    dpfile=open('/Users/florian/Desktop/MyWork/3D_sca/data/dpdata.dat','w')
-    dwfile=open('/Users/florian/Desktop/MyWork/3D_sca/data/dwdata.dat','w')
-    
-    
-    np.savetxt('/Users/florian/Desktop/MyWork/3D_sca/data/data.dat',res, fmt='%.8e')
-    np.savetxt('/Users/florian/Desktop/MyWork/3D_sca/data/dudata.dat',dures, fmt='%.8e')
-    np.savetxt('/Users/florian/Desktop/MyWork/3D_sca/data/dvdata.dat',dvres, fmt='%.8e')
-    np.savetxt('/Users/florian/Desktop/MyWork/3D_sca/data/dpdata.dat',dpres, fmt='%.8e')
-    np.savetxt('/Users/florian/Desktop/MyWork/3D_sca/data/dwdata.dat',dwres, fmt='%.8e')
-    
+    np.savetxt(f'{out_dir}/data.dat',res, fmt='%.8e')
+    np.savetxt(f'{out_dir}/dudata.dat',dures, fmt='%.8e')
+    np.savetxt(f'{out_dir}/dvdata.dat',dvres, fmt='%.8e')
+    np.savetxt(f'{out_dir}/dpdata.dat',dpres, fmt='%.8e')
+    np.savetxt(f'{out_dir}/dwdata.dat',dwres, fmt='%.8e')
+    np.savetxt(f'{out_dir}/qdata.dat',Qdata, fmt='%.8e')
     
     file.close()
     dufile.close()
     dvfile.close()
     dpfile.close()
     dwfile.close()
-    
+    qfile.close()
+
 else :
     
     u_f=u_u[0]
@@ -567,15 +592,13 @@ else :
     dres=np.append(dres,dw_dz_f)
     dres=np.append(dres,dw_dz_hf)
     
-    
-    
         
-    file=open('/Users/florian/Desktop/MyWork/2D/data_grid/steady_state/data.dat','w')
-    dfile=open('/Users/florian/Desktop/MyWork/2D/data_grid/steady_state/ddata.dat','w')
+    file=open(f'{out_dir}/data.dat','w')
+    dfile=open(f'{out_dir}/ddata.dat','w')
     #fin=np.append(fin,theta_f.T)
     #file.write(w_f.tofile())
-    np.savetxt('/Users/florian/Desktop/MyWork/2D/data_grid/steady_state/data.dat',res, fmt='%.8e')
-    np.savetxt('/Users/florian/Desktop/MyWork/2D/data_grid/steady_state/ddata.dat',dres, fmt='%.8e')
+    np.savetxt(f'{out_dir}/data.dat',res, fmt='%.8e')
+    np.savetxt(f'{out_dir}/ddata.dat',dres, fmt='%.8e')
     
     file.close()
     dfile.close()
