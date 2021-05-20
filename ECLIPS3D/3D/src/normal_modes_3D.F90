@@ -51,12 +51,23 @@ PROGRAM normal_modes_3D
   kappa = gascons/cp
 
   ntab=6*nlong*(2*nlat*nz+(nlat+1)*nz+nlat*(nz+1))
+  !6 variables (u,v,w,theta,p,rho), each of which have 4 different arrays in the data.dat file. Two of those arrays are of size nlong*nlat*nz (hence the nlong*2*nlat*nz term. Then one of them has size nlong*(nlat+1)*nz and the other has nlong*nlat*(nz+1).
+
   ndutab=nz*nlat*nlong*7
+  ! 7 lots of derivatives on u
+
   ndvtab=nz*(nlat+1)*nlong*7
+  ! 7 lots of derivatives on v, which have nlat+1 latitude points
+
   ndptab=nz*nlat*nlong*8
+  ! 8 lots of derivatives on p
+
   ndwtab=(nz+1)*nlat*nlong*10
+  ! 10 lots of derivatives on w, which each have nz+1 points in the vertical
+
   ! nqtab=nz*nlat*nlong+(nz+1)*nlat*nlong
   nqtab=2*nz*nlat*nlong
+  ! 2 lots of heating arrays, each of size nz*nlat*nlong
 
 
   IF (myrow==0 .AND. mycol==0) THEN
