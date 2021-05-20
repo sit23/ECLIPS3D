@@ -1,0 +1,29 @@
+&resolution
+nlong = 35
+nlat = 25
+nz = 12
+nb = 255 
+/
+&folder
+DIRDATA = '/gpfs/ts0/projects/Research_Project-161613/sit204/data_eclips3d/3D_bar/data/'
+/
+
+#trad_type can be komacek, iroetal or constnt
+&planet
+deep = .TRUE.
+g_var = .TRUE. 
+eq_sym = .TRUE.
+trad_type = 'constnt' 
+tdrag_type = 'constnt'
+ymax = 88.9999d0
+height_min = 0.
+height_max = 30000.0
+lambda_min = 1.2501d0
+lambda_max = 361.2501d0
+g = 9.80616
+omega = 7.29212e-5
+gascons =  287.05d0
+cp = 1005.0
+rtot = 6371229.0d0 
+p0 = 1.0d5
+/
