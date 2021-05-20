@@ -150,6 +150,7 @@ MODULE mod_3D_fill_matrix
     read(10,*) dwarray
     read(11,*) qarray
 
+    print *, 'finished all reading'
 
     close(1)
     close(2)
@@ -722,10 +723,12 @@ t = 1
         END DO
       END DO
     END DO
+    
+    print *, 'read half of q array'
 
     DO i=1,nlong
       DO j=1,nlat
-        DO k=0,nz
+        DO k=1,nz
           Q_theta(i,j,k)=qarray(t)
           t=t+1
         END DO
