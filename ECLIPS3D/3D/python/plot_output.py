@@ -16,10 +16,10 @@ import numpy as np
 from scipy import interpolate
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
-
+import os
 
 #Directory of files to plot
-rep = '../data/'
+rep = f"{os.environ['ECLIPS3D_DATA']}/3D/data/"
 
 #Name of steady initial thermodynamic profile and results.
 # Defaults : rho_cs_ns.dat and selected_modes.dat
@@ -176,7 +176,7 @@ while (a<len(values2) and stop==False) :
     
     long= False #If True, plot in lat-long with wavenumber zm in longitude
     tot=True# If True,plot lat-long and height-long and planet 
-    tot=False
+    # tot=False
     
     mom=True #if True, display momentum
     mom=False
